@@ -1,0 +1,15 @@
+{
+  "name": "advent-of-code-2019",
+  "version": "0.0.0",
+  "description": "Advent of Code 2019",
+  "main": "answers.js",
+  "author": "Alexander Teglund",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.2"
+  }
+}
