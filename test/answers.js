@@ -10,4 +10,14 @@ describe('Answers', function() {
       assert.equal(require('../days/1/parts/2/result'), 5194970);
     });
   });
+
+  describe('Day 2: 1202 Program Alarm', function() {
+    it('Part 1', function() {
+      assert.equal(require('../days/2/parts/1/result'), 3790689);
+    });
+
+    xit('Part 2', function() {
+      // assert.equal(, );
+    });
+  });
 });

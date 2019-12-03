@@ -1,6 +1,6 @@
 {
   "name": "advent-of-code-2019",
-  "version": "0.0.0",
+  "version": "2.1.0",
   "description": "Advent of Code 2019",
   "main": "answers.js",
   "author": "Alexander Teglund",
