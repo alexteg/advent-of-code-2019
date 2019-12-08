@@ -11,5 +11,8 @@
   },
   "devDependencies": {
     "mocha": "^6.2.2"
+  },
+  "dependencies": {
+    "jsdom": "^15.2.1"
   }
 }
