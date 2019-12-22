@@ -24,6 +24,4 @@ class Range extends Array {
   }
 }
 
-console.log(new Range(10, 5));
-
 module.exports = Range;

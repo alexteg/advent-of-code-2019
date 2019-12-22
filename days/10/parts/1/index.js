@@ -24,10 +24,10 @@ const objects = input
     y,
   })));
 
-const maxX = objects.length - 1;
-const maxY = objects[0].length - 1;
-console.log('rows', maxX);
-console.log('columns', maxY);
+const MAX_X = objects.length - 1;
+const MAX_Y = objects[0].length - 1;
+console.log('rows', MAX_X);
+console.log('columns', MAX_Y);
 
 // const filterByProp = ()
 
@@ -35,92 +35,66 @@ const asteroidsMap = objects
   .map((row) => row.filter((obj) => obj.hasAsteroid))
 const asteroids = asteroidsMap.flat();
 
-// const asteroidsMap = [];
-// objects.forEach(({
-//   hasAsteroid,
-//   x,
-//   y,
-// }) => {
-//   if (!asteroidsMap[y]) {
-//     asteroidsMap[y] = [];
-//   }
-
-//   asteroidsMap[y][x] = hasAsteroid;
-// });
-
-// console.log('asteroidsMap', objects);
-
-// const getMidPoint = (a, b) => ({
-//   x: (a.x - b.x) / 2,
-//   y: (a.y - b.y) / 2,
-// });
-
 const getRelativeCoordinate = (a, b) => ({
-  x: b.x - a.x,
-  y: b.y - a.y,
+  x: Math.abs(b.x - a.x),
+  y: Math.abs(b.y - a.y),
 });
 
 const getAngle = ({ x, y }) => x / y;
-
-const getCoordinatesBetween = (a, b) => {
-  let y = b.y;
-  while (y < a.y) {
-    //
-  }
-}
 
 const isEvenNumber = (x) => Number.isInteger(x);
 
 const isEvenCoordinate = ({ x, y }) => isEvenNumber(x) && isEvenNumber(y);
 
-const coordinateInBound = ({ x, y }) => x >= 0 && y >= 0 && x <= maxX && y <= maxY;
+const coordinateInBound = ({ x, y }) => x >= 0 && y >= 0 && x <= MAX_X && y <= MAX_Y;
 
-const hasBlockingAsteroid = (rangeFrom, rangeTo, someFn) => (
-  !(new Range(rangeFrom, rangeTo).some(someFn))
+const hasAsteroid = ({ x, y }) => objects[x][y].hasAsteroid;
+
+const hasBlockingAsteroidStraight = (rangeFrom, rangeTo, someFn) => (
+  new Range(rangeFrom, rangeTo, false).some(someFn)
 );
 
+const isAdjacent = (a, b) => Math.abs(a - b) === 1;
+
 const asteroidIsVisibleFromOrigin = (asteroid, origin) => {
-  if (origin.x === asteroid.x) {
-    const rows = new Range(origin.y, asteroid.y);
-    const hasBlockingAsteroid = rows.some((y) => objects[origin.x][y].hasAsteroid);
-    return !hasBlockingAsteroid;
-  } else if (origin.y === asteroid.y) {
-    const columns = new Range(origin.x, asteroid.x);
-    const hasBlockingAsteroid = columns.some((x) => objects[x][origin.y].hasAsteroid);
-    return !hasBlockingAsteroid;
-  } else if (Math.abs(origin.x - asteroid.x) === 1 || Math.abs(origin.y - asteroid.y) === 1) {
+  if (origin.x === asteroid.x && origin.y === asteroid.y) {
+    // Exclude itself
     return false;
+  } else if (origin.x === asteroid.x) {
+    // seems to work
+    return !hasBlockingAsteroidStraight(origin.y, asteroid.y, (y) => objects[y][origin.x].hasAsteroid);
+  } else if (origin.y === asteroid.y) {
+    // seems to work
+    return !hasBlockingAsteroidStraight(origin.x, asteroid.x, (x) => objects[origin.y][x].hasAsteroid);
+  } else if (isAdjacent(origin.x, asteroid.x) || isAdjacent(origin.y, asteroid.y)) {
+    // seems to work
+    return true;
   } else {
     const relativeCoordinate = getRelativeCoordinate(origin, asteroid);
     const angle = getAngle(relativeCoordinate);
     const rows = new Range(origin.y, asteroid.y, false);
     const hasBlockingAsteroid = rows.some((y) => {
       const x = angle * y;
-      if (!isEvenNumber(x)) {
-        return false;
+      if (origin.x === 5 && origin.y === 8) {
+        console.log('angle', angle, 'x', x, 'y', y);
       }
-      if (!coordinateInBound({ x, y })) {
+      if (!isEvenNumber(x) || !coordinateInBound({ x, y })) {
         return false;
       }
       // console.log(angle, x, y);
-      return objects[x][y].hasAsteroid;
+      return objects[y][x].hasAsteroid;
     });
     return !hasBlockingAsteroid;
   }
-
-  // const evenMidpoint = isEvenCoordinate(midPoint);
-  // if (evenMidpoint && objects[midPoint.y, midPoint.x].hasAsteroid) {
-  //   ;
-  // }
 };
 
 asteroids.forEach((origin) => {
-  // console.log('pos', origin.x, origin.y, objects[origin.x]);
   asteroids.forEach((asteroid) => {
-    // if (!objects[origin.x][origin.y].count) {
-    //   objects[origin.x][origin.y].count = 0;
-    // }
-    objects[origin.y][origin.x].count += asteroidIsVisibleFromOrigin(asteroid, origin);
+    const isVisible = asteroidIsVisibleFromOrigin(asteroid, origin);
+    if (origin.x === 5 && origin.y === 8) {
+      console.log({ x: asteroid.x, y: asteroid.y }, isVisible);
+    }
+    objects[origin.y][origin.x].count += Number(isVisible);
   });
 });
 
@@ -130,3 +104,4 @@ const asteroidsVisibleCount = objects
   .sort((asteroidA, asteroidB) => asteroidB.count - asteroidA.count);
 
 console.log(asteroidsVisibleCount);
+console.log(asteroidsVisibleCount[0].count);
