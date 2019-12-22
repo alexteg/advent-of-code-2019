@@ -48,7 +48,7 @@ const isEvenCoordinate = ({ x, y }) => isEvenNumber(x) && isEvenNumber(y);
 
 const coordinateInBound = ({ x, y }) => x >= 0 && y >= 0 && x <= MAX_X && y <= MAX_Y;
 
-const hasAsteroid = ({ x, y }) => objects[x][y].hasAsteroid;
+const hasAsteroid = ({ x, y }) => objects[y] && objects[y][x] && objects[y][x].hasAsteroid;
 
 const hasBlockingAsteroidStraight = (rangeFrom, rangeTo, someFn) => (
   new Range(rangeFrom, rangeTo, false).some(someFn)
@@ -75,14 +75,7 @@ const asteroidIsVisibleFromOrigin = (asteroid, origin) => {
     const rows = new Range(origin.y, asteroid.y, false);
     const hasBlockingAsteroid = rows.some((y) => {
       const x = angle * y;
-      if (origin.x === 5 && origin.y === 8) {
-        console.log('angle', angle, 'x', x, 'y', y);
-      }
-      if (!isEvenNumber(x) || !coordinateInBound({ x, y })) {
-        return false;
-      }
-      // console.log(angle, x, y);
-      return objects[y][x].hasAsteroid;
+      return hasAsteroid({ x, y });
     });
     return !hasBlockingAsteroid;
   }
